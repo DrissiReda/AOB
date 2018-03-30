@@ -1,9 +1,9 @@
- 
+
 #include <time.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
- 
+
 /*
  * function used to compute the linear position in a vector express as coordinate in a two-D structure
  */
@@ -18,15 +18,15 @@ int build_index(int i, int j, int grid_size)
  */
 
 void swap(float *d, float *dOld, int vector_size)
-  { 
+  {
   int i;
   float tmp;
 
   for (i=0 ; i < vector_size ; i ++)
     {
-    tmp = d[i]; 
-    d[i] = dOld[i]; 
-    dOld[i] = tmp; 
+    tmp = d[i];
+    d[i] = dOld[i];
+    dOld[i] = tmp;
     }
   }
 
@@ -38,7 +38,7 @@ void addSource(float *x, float *x0, int vector_size, float factor)
   {
   int i;
 
-  for (i = 0; i < vector_size; i++)
+  for (i = 0; i < vector_size; ++i)
     {
     x[i] += factor * x0[i];
     }
@@ -53,7 +53,7 @@ void setBoundry(int b, float* x, int grid_size)
   {
   int i;
 
-  for (i = 1; i <= grid_size; i++)
+  for (i = 1; i <= grid_size; ++i)
     {
     if (b==1)
        {
@@ -92,12 +92,14 @@ void setBoundry(int b, float* x, int grid_size)
 void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int grid_size)
   {
   int i,j,k;
-
-  for (k = 0; k < 20; k++)
+  // to avoid rvalue caching we'll be using post increments instead
+  // this is probably handled by gcc but I still have no ideas thus I'm giving
+  //myself the comfort of the illusion of progress
+  for (k = 0; k < 20; ++k)
     {
-    for (i = 1; i <= grid_size; i++)
+    for (j = 1; j <= grid_size; ++j)
       {
-      for (j = 1; j <= grid_size; j++)
+      for (i = 1; i <= grid_size; ++i)
         {
         x[build_index(i, j, grid_size)] = (a * ( x[build_index(i-1, j, grid_size)] + x[build_index(i+1, j, grid_size)] +   x[build_index(i, j-1, grid_size)] + x[build_index(i, j+1, grid_size)]) +  x0[build_index(i, j, grid_size)]) / c;
         }
@@ -290,7 +292,7 @@ void vorticityConfinement(float* Fvc_x, float* Fvc_y, float *curl, float *u, flo
 void project(float* x, float* y, float* p, float* div, float dt, int grid_size)
  {
  int i, j;
-    
+
  for (i = 1; i <= grid_size; i++)
    {
    for (j = 1; j <= grid_size; j++)
@@ -331,7 +333,7 @@ void c_densitySolver(float *d, float *dOld, float diff, float *u, float *v , flo
 
   advect(0, d, dOld, u, v, grid_size, dt);
   // clear input density array for next frame
-  for (i = 0; i < vector_size; i++) 
+  for (i = 0; i < vector_size; i++)
     {
     dOld[i] = 0;
     }
@@ -382,11 +384,8 @@ void c_velocitySolver( float *u, float *uOld, float *v, float *vOld, float *curl
 
   // clear all input velocities for next frame
   for (i = 0; i < vector_size; i++)
-      { 
-      uOld[i] = 0; 
-      vOld[i] = 0; 
+      {
+      uOld[i] = 0;
+      vOld[i] = 0;
       }
   }
-
-
-
