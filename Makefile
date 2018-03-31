@@ -19,7 +19,7 @@ java:
 	javac *.java
 
 run:
-	LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH appletviewer  -J"-Djava.security.policy=applet.policy" demo.html
+	LD_LIBRARY_PATH=$(shell pwd):$(LD_LIBRARY_PATH) appletviewer  -J"-Djava.security.policy=applet.policy" demo.html
 
 debug:
 	appletviewer -debug -J"-Djava.security.policy=applet.policy" demo.html
