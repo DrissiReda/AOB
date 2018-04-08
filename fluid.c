@@ -113,7 +113,8 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
     setBoundry(b, x, grid_size);
     }
 	end=omp_get_wtime();
-	printf("%lf\n",end-start); //Prints time for one linearSolver run, will be useful for the script that calculates medians/averages or just our observations
+	if (grid_size>400)
+    printf("%lf\n",end-start); //Prints time for one linearSolver run, will be useful for the script that calculates medians/averages or just our observations
   }
 
 /*
