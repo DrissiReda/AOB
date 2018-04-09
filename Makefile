@@ -1,12 +1,12 @@
 
 CC=gcc
 INCLUDE=-I/usr/lib/jvm/java-8-openjdk-amd64/include/ -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux/
-CFLAGS=-c -fpic -fopenmp -Ofast -march=native -mavx2 -finline-functions $(INCLUDE)
+CFLAGS=-c -fpic  -Ofast -fopenmp -march=native  $(INCLUDE)
 
 all: core java
 
 core:  interface_c_java_wrap.o fluid.o
-	$(CC) -shared interface_c_java_wrap.o /usr/lib/gcc/x86_64-linux-gnu/6/libgomp.so fluid.o -o libfluid.so
+	$(CC) -shared interface_c_java_wrap.o  /usr/lib/gcc/x86_64-linux-gnu/6/libgomp.so fluid.o -o libfluid.so
 
 fluid.o: fluid.c
 	$(CC) $(CFLAGS) $<
