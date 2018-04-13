@@ -24,6 +24,19 @@ You need
 * then execute it with `make run`
 * At runtime we added the `export LD_LIBRARY_PATH` to avoid having to do it each time you open a terminal 
 
+## TRYING OUT DIFFERENT OPTIS 
+
+Currently our targets are 
+  * `nopti` for the basic code with no optimizations
+  * `pinc` for the pre increment optimization 
+  * `muldiv` for the pre increment+mul/div switching 
+  * `inl`  all of the above + inlining
+  * `omp` all of the above + openMP integration 
+ You can execute this command in case of repetitive testing for fastest results
+ ```
+    make clean && make <target> && make run
+ ```
+Using make with no parameters is going to launch the highest level of optimization
 
 ## CURRENT IMPROVEMENTS
 * Using openmp which is self explanatory
