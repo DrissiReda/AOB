@@ -1,4 +1,4 @@
-
+#define N_THRD 8
 #include <time.h>
 #include <stdio.h>
 #include <math.h>
@@ -98,13 +98,13 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
   double start,end;
   start=omp_get_wtime();
   c =1/c; // this should make the code faster so we can benefit from avx2
-  #pragma omp parallel for num_threads(8) private (k)
+  #pragma omp parallel for num_threads(N_THRD) private (k)
   for (k = 0; k < 20; ++k)
     {
-    #pragma omp parallel for num_threads(8) private (j)
+    #pragma omp parallel for num_threads(N_THRD) private (j)
     for (j = 1; j <= grid_size; ++j)
       {
-      #pragma omp parallel for num_threads(8) private (i)
+      #pragma omp parallel for num_threads(N_THRD) private (i)
       for (i = 1; i <= grid_size; ++i)
         {
         x[build_index(i, j, grid_size)] = (a * ( x[build_index(i-1, j, grid_size)] + x[build_index(i+1, j, grid_size)] +   x[build_index(i, j-1, grid_size)] + x[build_index(i, j+1, grid_size)]) +  x0[build_index(i, j, grid_size)]) * c;
