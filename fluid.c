@@ -64,7 +64,7 @@ inline void setBoundry(int b, float* x, int grid_size)
       {
       x[build_index(0, i, grid_size)] = x[build_index(1, i, grid_size)];
       x[build_index(grid_size+1, i, grid_size)] = x[build_index(grid_size, i, grid_size)];
-      }
+    }
    if (b==2)
       {
       x[build_index(i, 0, grid_size)] = -x[build_index(i, 1, grid_size)];

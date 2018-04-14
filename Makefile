@@ -50,6 +50,12 @@ inl:  interface_c_java_wrap.o fluid_inl.o
 fluid_inl.o: fluid_inl.c
 	$(CC) $(CFLAGS) $<
 
+test:  interface_c_java_wrap.o fluid_test.o
+	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_test.o -o libfluid.so
+	javac *.java
+fluid_test.o: fluid_test.c
+	$(CC) $(CFLAGS) $<
+
 java:
 	javac *.java
 
@@ -58,7 +64,7 @@ run:
 
 debug:
 	appletviewer -debug -J"-Djava.security.policy=applet.policy" demo.html
-test:
+tst:
 	$(CC) $(TCFLAGS) -g -floop-unroll-and-jam fluid_test.c -o testing
 clean:
 	rm -f *.o
