@@ -3,6 +3,14 @@ CC=gcc
 INCLUDE=-I/usr/lib/jvm/java-8-openjdk-amd64/include/ -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux/
 CFLAGS=-c -fpic  -Ofast -fopenmp -march=native  $(INCLUDE)
 GOMP=/usr/lib/gcc/x86_64-linux-gnu/6/libgomp.so
+
+fin:  interface_c_java_wrap.o fluid.o
+	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid.o -o libfluid.so
+	javac *.java
+
+fluid.o: fluid.c
+	$(CC) $(CFLAGS) $<
+
 omp:  interface_c_java_wrap.o fluid_omp.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_omp.o -o libfluid.so
 	javac *.java

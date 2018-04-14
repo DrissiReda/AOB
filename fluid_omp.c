@@ -7,7 +7,7 @@
 /*
  * function used to compute the linear position in a vector express as coordinate in a two-D structure
  */
-inline int build_index(int i, int j, int grid_size)
+int build_index(int i, int j, int grid_size)
   {
   return (i + (grid_size + 2) * j);
   }
@@ -49,7 +49,7 @@ void addSource(float *x, float *x0, int vector_size, float factor)
  * specifies simple boundry conditions.
  */
 
-inline void setBoundry(int b, float* x, int grid_size)
+void setBoundry(int b, float* x, int grid_size)
   {
   int i;
 
@@ -97,17 +97,16 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
   //myself the comfort of the illusion of progress
   double start,end;
   start=omp_get_wtime();
-  c =1/c; // this should make the code faster so we can benefit from avx2
   #pragma omp parallel for num_threads(N_THRD) private (k)
-  for (k = 0; k < 20; ++k)
+  for (k = 0; k < 20; k++)
     {
     #pragma omp parallel for num_threads(N_THRD) private (j)
-    for (j = 1; j <= grid_size; ++j)
+    for (j = 1; j <= grid_size; j++)
       {
       #pragma omp parallel for num_threads(N_THRD) private (i)
-      for (i = 1; i <= grid_size; ++i)
+      for (i = 1; i <= grid_size; i++)
         {
-        x[build_index(i, j, grid_size)] = (a * ( x[build_index(i-1, j, grid_size)] + x[build_index(i+1, j, grid_size)] +   x[build_index(i, j-1, grid_size)] + x[build_index(i, j+1, grid_size)]) +  x0[build_index(i, j, grid_size)]) * c;
+        x[build_index(i, j, grid_size)] = (a * ( x[build_index(i-1, j, grid_size)] + x[build_index(i+1, j, grid_size)] +   x[build_index(i, j-1, grid_size)] + x[build_index(i, j+1, grid_size)]) +  x0[build_index(i, j, grid_size)]) / c;
         }
       }
     setBoundry(b, x, grid_size);

@@ -5,7 +5,7 @@ School project for optimizing calculations, the example used is a fluid simulato
 ## PREREQUESITES
 
 You need
-* openjdk-x-jdk switch the x with your version 
+* openjdk-x-jdk switch the x with your version
 * swing
 * gcc with `openmp` support
 
@@ -13,25 +13,26 @@ You need
 
 * If your `libgomp.so` is elsewhere you can find it with :
 
-  ``` 
-  find / \( -path /mnt -o -path /media -o -path /home -o -path /tmp -o -path /cache \) -prune -o -name "libgomp.so" 2>/dev/null 
-  ``` 
-  
- 
+  ```
+  find / \( -path /mnt -o -path /media -o -path /home -o -path /tmp -o -path /cache \) -prune -o -name "libgomp.so" 2>/dev/null
+  ```
+
+
  No need to search for it in tmp mnt media home root unless you have a reason to think it's there (please don't)
 
 * You can build the project with `make`
 * then execute it with `make run`
-* At runtime we added the `export LD_LIBRARY_PATH` to avoid having to do it each time you open a terminal 
+* At runtime we added the `export LD_LIBRARY_PATH` to avoid having to do it each time you open a terminal
 
-## TRYING OUT DIFFERENT OPTIS 
+## TRYING OUT DIFFERENT OPTIS
 
-Currently our targets are 
+Currently our targets are
   * `nopti` for the basic code with no optimizations
-  * `pinc` for the pre increment optimization 
-  * `muldiv` for the pre increment+mul/div switching 
-  * `inl`  all of the above + inlining
-  * `omp` all of the above + openMP integration 
+  * `pinc` for the pre increment optimization
+  * `muldiv` for mul/div switching
+  * `inl`  inlining `build_index` and `setBoundry`
+  * `omp` openMP integration
+  * `fin` all of the above
  You can execute this command in case of repetitive testing for fastest results
  ```
     make clean && make <target> && make run
@@ -42,7 +43,7 @@ Using make with no parameters is going to launch the highest level of optimizati
 * Using openmp which is self explanatory
 * Using inline functions because calling functions is more time consuming than copying them
 * Using Ofast mostly for `-ftree-vectorize` and `-frename-registers` and `-ffast-math`
-* Using `-mavx2` so changing the `c` constant to `1/c` so that we can change division into multiplication <br> 
+* Using `-mavx2` so changing the `c` constant to `1/c` so that we can change division into multiplication <br>
   because division does not benefit from AVX
 * Switching i with j to avoid cache misses
 * using pre increment instead of post increment (in case gcc doesn't handle that which it most probably does
