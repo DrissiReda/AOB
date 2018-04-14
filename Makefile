@@ -1,7 +1,8 @@
 
 CC=gcc
 INCLUDE=-I/usr/lib/jvm/java-8-openjdk-amd64/include/ -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux/
-CFLAGS=-c -fpic  -Ofast -fopenmp -march=native  $(INCLUDE)
+TCFLAGS=-fpic  -Ofast -fopenmp -march=skylake -fprefetch-loop-arrays -Winline -msse4  $(INCLUDE)
+CFLAGS=-c $(TCFLAGS)
 GOMP=/usr/lib/gcc/x86_64-linux-gnu/6/libgomp.so
 
 fin:  interface_c_java_wrap.o fluid.o
@@ -57,7 +58,8 @@ run:
 
 debug:
 	appletviewer -debug -J"-Djava.security.policy=applet.policy" demo.html
-
+test:
+	$(CC) $(TCFLAGS) -g -floop-unroll-and-jam fluid_test.c -o testing
 clean:
 	rm -f *.o
 	rm -f *.so
