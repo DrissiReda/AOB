@@ -1,8 +1,9 @@
 
 fast 0.035602
-final 0.003403
+final 0.003373
 inl 0.015603
 muldiv 0.035951
 nopti 0.060023
 omp 0.008822
 pinc 0.035695
+test 0.016142

@@ -43,11 +43,19 @@ Using make with no parameters is going to launch the highest level of optimizati
 * Using openmp which is self explanatory
 * Using inline functions because calling functions is more time consuming than copying them
 * Using Ofast mostly for `-ftree-vectorize` and `-frename-registers` and `-ffast-math`
-* Using `-mavx2` so changing the `c` constant to `1/c` so that we can change division into multiplication <br>
+* Using `-mavx2` then changing the `c` constant to `1/c` so that we can change division into
+multiplication <br>
   because division does not benefit from AVX
-* Switching i with j to avoid cache misses
-* using pre increment instead of post increment (in case gcc doesn't handle that which it most probably does
 
+## USELESS IMPROVEMENTS
+* using a variable to store the `build_index(i,j,grid_size)` then just adding subtracting the needed
+  value in order to avoid computing the core value each time had no real performance improvement.
+* In `setBoundry` getting the if statement that is independent of the iterations out of the core
+  function had no real added value either.
+* Dividing the long calculations to avoid mixing add and mul hassles.
+* using pre increment instead of post increment (in case gcc doesn't handle that which it most
+  probably does)
+* unrolling loops even manually is useless because iterations are dependent 
 ## IMPROVEMENT IDEAS
 * Using intel intrinsic fonctions in order to use sse registers (better result than `-mavx2` in theory)
 * Verifying whether `build_index` and `setBoundry `functions have room for improvements.
