@@ -91,13 +91,13 @@ inline void setBoundry(int b, float* x, int grid_size)
 
 void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int grid_size)
   {
-  int i,j,k;
+  register unsigned int i,j,k,ind;
   // to avoid rvalue caching we'll be using post increments instead
   // this is probably handled by gcc but I still have no ideas thus I'm giving
   //myself the comfort of the illusion of progress
   double start,end;
   start=omp_get_wtime();
-  c =1/c; // this should make the code faster so we can benefit from avx2
+  //c =1/c; // this should make the code faster so we can benefit from avx2
   #pragma omp parallel for num_threads(N_THRD) private (k)
   for (k = 0; k < 20; ++k)
     {
@@ -105,11 +105,54 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
     for (j = 1; j <= grid_size; ++j)
       {
       #pragma omp parallel for num_threads(N_THRD) private (i)
-      for (i = 1; i <= grid_size; ++i)
+      for (i = 1; i <= grid_size-7; i=i+8)
         {
-        x[build_index(i, j, grid_size)]  = x[build_index(i-1, j, grid_size)] + x[build_index(i+1, j, grid_size)] +   x[build_index(i, j-1, grid_size)] + x[build_index(i, j+1, grid_size)];
-        x[build_index(i, j, grid_size)]  = a*x[build_index(i, j, grid_size)]+  x0[build_index(i, j, grid_size)];
-        x[build_index(i, j, grid_size)] *= c;
+          x[build_index(i, j, grid_size)] = (a * ( x[build_index(i-1, j, grid_size)] +
+          x[build_index(i+1, j, grid_size)] +   x[build_index(i, j-1, grid_size)] +
+          x[build_index(i, j+1, grid_size)])
+          +  x0[build_index(i, j, grid_size)]) / c;
+
+
+          x[build_index(i+1, j, grid_size)] = (a * ( x[build_index(i, j, grid_size)] +
+          x[build_index(i+2, j, grid_size)] +   x[build_index(i+1, j-1, grid_size)] +
+          x[build_index(i+1, j+1, grid_size)])
+          +  x0[build_index(i+1, j, grid_size)]) / c;
+
+
+          x[build_index(i+2, j, grid_size)] = (a * ( x[build_index(i+1, j, grid_size)] +
+          x[build_index(i+3, j, grid_size)] +   x[build_index(i+2, j-1, grid_size)] +
+          x[build_index(i+2, j+1, grid_size)])//
+          +  x0[build_index(i+2, j, grid_size)]) / c;
+
+
+          x[build_index(i+3, j, grid_size)] = (a * ( x[build_index(i+2, j, grid_size)] +
+          x[build_index(i+4, j, grid_size)] +   x[build_index(i+3, j-1, grid_size)] +
+          x[build_index(i+3, j+1, grid_size)])
+          +  x0[build_index(i+3, j, grid_size)]) / c;
+
+
+          x[build_index(i+4, j, grid_size)] = (a * ( x[build_index(i+3, j, grid_size)] +
+          x[build_index(i+5, j, grid_size)] +   x[build_index(i+4, j-1, grid_size)] +
+          x[build_index(i+4, j+1, grid_size)])
+          +  x0[build_index(i+4, j, grid_size)]) / c;
+
+
+          x[build_index(i+5, j, grid_size)] = (a * ( x[build_index(i+4, j, grid_size)] +
+          x[build_index(i+6, j, grid_size)] +   x[build_index(i+5, j-1, grid_size)] +
+          x[build_index(i+5, j+1, grid_size)])
+          +  x0[build_index(i+5, j, grid_size)]) / c;
+
+
+          x[build_index(i+6, j, grid_size)] = (a * ( x[build_index(i+5, j, grid_size)] +
+          x[build_index(i+7, j, grid_size)] +   x[build_index(i+6, j-1, grid_size)] +
+          x[build_index(i+6, j+1, grid_size)])
+          +  x0[build_index(i+6, j, grid_size)]) / c;
+
+
+          x[build_index(i+7, j, grid_size)] = (a * ( x[build_index(i+6, j, grid_size)] +
+          x[build_index(i+8, j, grid_size)] +   x[build_index(i+7, j-1, grid_size)] +
+          x[build_index(i+7, j+1, grid_size)])
+          +  x0[build_index(i+7, j, grid_size)]) / c;
         }
       }
     setBoundry(b, x, grid_size);

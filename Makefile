@@ -11,14 +11,14 @@ fin:  interface_c_java_wrap.o fluid.o
 	javac *.java
 
 fluid.o: fluid.c
-	$(CC) $(CFLAGS) $<
+	$(CC) $(CFLAGS) fluid.c -o fluid.o
 
 omp:  interface_c_java_wrap.o fluid_omp.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_omp.o -o libfluid.so
 	javac *.java
 
-fluid_omp.o: fluid_omp.c
-	$(CC) $(CFLAGS) $<
+fluid_omp.o:
+	$(CC) $(CFLAGS) fluid_omp.c -o fluid_omp.o
 
 interface_c_java_wrap.o:
 	swig -java interface_c_java.swig
@@ -27,8 +27,8 @@ interface_c_java_wrap.o:
 nopti:  interface_c_java_wrap.o fluid_nopti.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_nopti.o -o libfluid.so
 	javac *.java
-fluid_nopti.o: fluid_nopti.c
-	$(CC) $(NCFLAGS) $<
+fluid_nopti.o:
+	$(CC) $(NCFLAGS) fluid_nopti.c -o fluid_nopti.o
 
 
 pinc:  interface_c_java_wrap.o fluid_pinc.o
@@ -53,8 +53,8 @@ fluid_inl.o: fluid_inl.c
 fast:  interface_c_java_wrap.o fluid_fast.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_fast.o -o libfluid.so
 	javac *.java
-fluid_fast.o: fluid_nopti.c
-	$(CC) $(CFLAGS) $<
+fluid_fast.o:
+	$(CC) $(CFLAGS) fluid_nopti.c -o fluid_fast.o
 
 test:  interface_c_java_wrap.o fluid_test.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_test.o -o libfluid.so
