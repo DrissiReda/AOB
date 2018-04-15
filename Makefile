@@ -18,7 +18,7 @@ omp:  interface_c_java_wrap.o fluid_omp.o
 	javac *.java
 
 fluid_omp.o:
-	$(CC) $(CFLAGS) fluid_omp.c -o fluid_omp.o
+	$(CC) $(NCFLAGS) fluid_omp.c -o fluid_omp.o
 
 interface_c_java_wrap.o:
 	swig -java interface_c_java.swig
@@ -35,21 +35,23 @@ pinc:  interface_c_java_wrap.o fluid_pinc.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_pinc.o -o libfluid.so
 	javac *.java
 fluid_pinc.o: fluid_pinc.c
-	$(CC) $(CFLAGS) $<
+	$(CC) $(NCFLAGS) $<
 
 
 muldiv:  interface_c_java_wrap.o fluid_muldiv.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_muldiv.o -o libfluid.so
 	javac *.java
 fluid_muldiv.o: fluid_muldiv.c
-	$(CC) $(CFLAGS) $<
+	$(CC) $(NCFLAGS) $<
 
 
 inl:  interface_c_java_wrap.o fluid_inl.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_inl.o -o libfluid.so
 	javac *.java
 fluid_inl.o: fluid_inl.c
-	$(CC) $(CFLAGS) $<
+	$(CC) $(NCFLAGS) -O2 -finline-functions $<
+
+
 fast:  interface_c_java_wrap.o fluid_fast.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_fast.o -o libfluid.so
 	javac *.java
