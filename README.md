@@ -28,6 +28,7 @@ You need
 
 Currently our targets are
   * `nopti` for the basic code with no optimizations
+  * `fast`  for compilation time optimizations
   * `pinc` for the pre increment optimization
   * `muldiv` for mul/div switching
   * `inl`  inlining `build_index` and `setBoundry`
@@ -55,7 +56,7 @@ multiplication <br>
 * Dividing the long calculations to avoid mixing add and mul hassles.
 * using pre increment instead of post increment (in case gcc doesn't handle that which it most
   probably does)
-* unrolling loops even manually is useless because iterations are dependent 
+* unrolling loops even manually is useless because iterations are dependent
 ## IMPROVEMENT IDEAS
 * Using intel intrinsic fonctions in order to use sse registers (better result than `-mavx2` in theory)
 * Verifying whether `build_index` and `setBoundry `functions have room for improvements.
