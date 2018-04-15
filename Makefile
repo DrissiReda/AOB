@@ -1,7 +1,8 @@
-
 CC=gcc
 INCLUDE=-I/usr/lib/jvm/java-8-openjdk-amd64/include/ -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux/
-TCFLAGS=-fpic  -Ofast -fopenmp -march=skylake -fprefetch-loop-arrays -Winline -msse4  $(INCLUDE)
+NFLAGS=-fpic -fopenmp $(INCLUDE)
+TCFLAGS=-Ofast -march=skylake -fprefetch-loop-arrays -Winline -msse4  $(NFLAGS)
+NCFLAGS=-c $(NFLAGS)
 CFLAGS=-c $(TCFLAGS)
 GOMP=/usr/lib/gcc/x86_64-linux-gnu/6/libgomp.so
 
@@ -21,13 +22,13 @@ fluid_omp.o: fluid_omp.c
 
 interface_c_java_wrap.o:
 	swig -java interface_c_java.swig
-	$(CC) $(CFLAGS)  interface_c_java_wrap.c
+	$(CC) $(NCFLAGS)  interface_c_java_wrap.c
 
 nopti:  interface_c_java_wrap.o fluid_nopti.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_nopti.o -o libfluid.so
 	javac *.java
 fluid_nopti.o: fluid_nopti.c
-	$(CC) $(CFLAGS) $<
+	$(CC) $(NCFLAGS) $<
 
 
 pinc:  interface_c_java_wrap.o fluid_pinc.o
@@ -48,6 +49,11 @@ inl:  interface_c_java_wrap.o fluid_inl.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_inl.o -o libfluid.so
 	javac *.java
 fluid_inl.o: fluid_inl.c
+	$(CC) $(CFLAGS) $<
+fast:  interface_c_java_wrap.o fluid_fast.o
+	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_fast.o -o libfluid.so
+	javac *.java
+fluid_fast.o: fluid_nopti.c
 	$(CC) $(CFLAGS) $<
 
 test:  interface_c_java_wrap.o fluid_test.o
