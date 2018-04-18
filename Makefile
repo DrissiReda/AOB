@@ -1,6 +1,6 @@
 CC=gcc
 INCLUDE=-I/usr/lib/jvm/java-8-openjdk-amd64/include/ -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux/
-NFLAGS=-fpic -fopenmp $(INCLUDE)
+NFLAGS=-fpic $(INCLUDE)
 TCFLAGS=-Ofast -march=skylake -fprefetch-loop-arrays -Winline -msse4  $(NFLAGS)
 NCFLAGS=-c $(NFLAGS)
 CFLAGS=-c $(TCFLAGS)
@@ -11,21 +11,21 @@ fin:  interface_c_java_wrap.o fluid.o
 	javac *.java
 
 fluid.o: fluid.c
-	$(CC) $(CFLAGS) fluid.c -o fluid.o
+	$(CC) $(CFLAGS) -fopenmp fluid.c -o fluid.o
 
 omp:  interface_c_java_wrap.o fluid_omp.o
 	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_omp.o -o libfluid.so
 	javac *.java
 
 fluid_omp.o:
-	$(CC) $(NCFLAGS) fluid_omp.c -o fluid_omp.o
+	$(CC) $(NCFLAGS) -fopenmp fluid_omp.c -o fluid_omp.o
 
 interface_c_java_wrap.o:
 	swig -java interface_c_java.swig
 	$(CC) $(NCFLAGS)  interface_c_java_wrap.c
 
 nopti:  interface_c_java_wrap.o fluid_nopti.o
-	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_nopti.o -o libfluid.so
+	$(CC) -shared interface_c_java_wrap.o  fluid_nopti.o -o libfluid.so
 	javac *.java
 fluid_nopti.o:
 	$(CC) $(NCFLAGS) fluid_nopti.c -o fluid_nopti.o

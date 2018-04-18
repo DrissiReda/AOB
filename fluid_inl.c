@@ -1,9 +1,8 @@
 #define N_THRD 8
-#include <time.h>
+#include <sys/time.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <omp.h>
 /*
  * function used to compute the linear position in a vector express as coordinate in a two-D structure
  */
@@ -96,7 +95,12 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
   // this is probably handled by gcc but I still have no ideas thus I'm giving
   //myself the comfort of the illusion of progress
   double start,end;
-  start=omp_get_wtime();
+  unsigned long long useconds;
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  useconds = (1000000*tv.tv_sec) + tv.tv_usec;
+  start=useconds;//omp_get_wtime();
+  /////////////////////////////////TO OPTIMIZE////////////////////////////////////////////////////
   for (k = 0; k < 20; k++)
     {
     for (j = 1; j <= grid_size; j++)
@@ -108,11 +112,13 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
       }
     setBoundry(b, x, grid_size);
     }
-	end=omp_get_wtime();
-	if (grid_size>400)
-    printf("%lf\n",end-start); //Prints time for one linearSolver run, will be useful for the script that calculates medians/averages or just our observations
-  }
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    gettimeofday(&tv,NULL);
+    useconds = (1000000*tv.tv_sec) + tv.tv_usec;
+  	end=useconds;//omp_get_wtime();
+  	if (grid_size>400)
+      printf("%lf\n",(float)((end-start))/1000000);
+ }
 /*
  * Recalculate the input array with diffusion effects.
  * Here we consider a stable method of diffusion by
