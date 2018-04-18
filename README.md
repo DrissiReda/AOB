@@ -1,6 +1,7 @@
 # AOB
 
 School project for optimizing calculations, the example used is a fluid simulator.
+By DRISSI Reda and HASAN JUSUF Yusnanda - IATIC4 ISTY
 
 ## PREREQUESITES
 
