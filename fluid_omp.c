@@ -1,5 +1,5 @@
 #define N_THRD 8
-#include <time.h>
+#include <sys/time.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -96,14 +96,19 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
   // this is probably handled by gcc but I still have no ideas thus I'm giving
   //myself the comfort of the illusion of progress
   double start,end;
-  start=omp_get_wtime();
-  #pragma omp parallel for num_threads(N_THRD) private (k)
+  unsigned long long useconds;
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  useconds = (1000000*tv.tv_sec) + tv.tv_usec;
+  start=useconds;//omp_get_wtime();
+  /////////////////////////////////TO OPTIMIZE////////////////////////////////////////////////////
+  #pragma omp parallel for num_threads(N_THRD)
   for (k = 0; k < 20; k++)
     {
-    #pragma omp parallel for num_threads(N_THRD) private (j)
+    #pragma omp parallel for num_threads(N_THRD)
     for (j = 1; j <= grid_size; j++)
       {
-      #pragma omp parallel for num_threads(N_THRD) private (i)
+      #pragma omp parallel for num_threads(N_THRD)
       for (i = 1; i <= grid_size; i++)
         {
         x[build_index(i, j, grid_size)] = (a * ( x[build_index(i-1, j, grid_size)] + x[build_index(i+1, j, grid_size)] +   x[build_index(i, j-1, grid_size)] + x[build_index(i, j+1, grid_size)]) +  x0[build_index(i, j, grid_size)]) / c;
@@ -111,10 +116,13 @@ void linearSolver(int b, float* x, float* x0, float a, float c, float dt, int gr
       }
     setBoundry(b, x, grid_size);
     }
-	end=omp_get_wtime();
-	if (grid_size>400)
-    printf("%lf\n",end-start); //Prints time for one linearSolver run, will be useful for the script that calculates medians/averages or just our observations
-  }
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    gettimeofday(&tv,NULL);
+    useconds = (1000000*tv.tv_sec) + tv.tv_usec;
+  	end=useconds;//omp_get_wtime();
+  	if (grid_size>400)
+      printf("%lf\n",(float)((end-start))/1000000); //Prints time for one linearSolver run, will be useful for the script that calculates medians/averages or just our observations
+    }
 
 /*
  * Recalculate the input array with diffusion effects.

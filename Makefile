@@ -32,28 +32,28 @@ fluid_nopti.o:
 
 
 pinc:  interface_c_java_wrap.o fluid_pinc.o
-	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_pinc.o -o libfluid.so
+	$(CC) -shared interface_c_java_wrap.o   fluid_pinc.o -o libfluid.so
 	javac *.java
 fluid_pinc.o: fluid_pinc.c
 	$(CC) $(NCFLAGS) $<
 
 
 muldiv:  interface_c_java_wrap.o fluid_muldiv.o
-	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_muldiv.o -o libfluid.so
+	$(CC) -shared interface_c_java_wrap.o   fluid_muldiv.o -o libfluid.so
 	javac *.java
 fluid_muldiv.o: fluid_muldiv.c
 	$(CC) $(NCFLAGS) $<
 
 
 inl:  interface_c_java_wrap.o fluid_inl.o
-	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_inl.o -o libfluid.so
+	$(CC) -shared interface_c_java_wrap.o   fluid_inl.o -o libfluid.so
 	javac *.java
 fluid_inl.o: fluid_inl.c
 	$(CC) $(NCFLAGS) -O2 -finline-functions $<
 
 
 fast:  interface_c_java_wrap.o fluid_fast.o
-	$(CC) -shared interface_c_java_wrap.o  $(GOMP) fluid_fast.o -o libfluid.so
+	$(CC) -shared interface_c_java_wrap.o   fluid_fast.o -o libfluid.so
 	javac *.java
 fluid_fast.o:
 	$(CC) $(CFLAGS) fluid_nopti.c -o fluid_fast.o
