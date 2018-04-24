@@ -443,13 +443,13 @@ void c_velocitySolver( float *u, float *uOld, float *v, float *vOld, float *curl
       vOld[i] = 0;
       }
   }
-// int main()
-// {
-//   int i,a=10,b=10,grid_size=450;
-//   float c=2.0,dt=3.0;
-//   float* x=malloc(sizeof(x[0])*grid_size*grid_size*30);
-//   float* x0=malloc(sizeof(x0[0])*grid_size*grid_size*30);
-//   for(int i=0;i<grid_size*grid_size*30;i++)
-//   {x[0]=2.0;x0[0]=2.0;}
-//   linearSolver(b, x, x0, a, c, dt, grid_size);
-// }
+int main()
+{
+   int i,a=10,b=10,grid_size=450;
+   float c=2.0,dt=3.0;
+   float* x=malloc(sizeof(x[0])*grid_size*grid_size*30);
+   float* x0=malloc(sizeof(x0[0])*grid_size*grid_size*30);
+   for(int i=0;i<grid_size*grid_size*30;i++)
+   {x[0]=2.0;x0[0]=2.0;}
+   linearSolver(b, x, x0, a, c, dt, grid_size);
+}
